@@ -79,9 +79,6 @@
         <div id="input-container" class="input-container">
             <!-- Individual clip input boxes will be generated here -->
         </div>
-        <div class="button-container">
-            <button onclick="startBattle()">Start Battle</button>
-        </div>
         <div id="battle-container" class="battle">
             <iframe id="clip1" height="360" width="640" allowfullscreen></iframe>
             <iframe id="clip2" height="360" width="640" allowfullscreen></iframe>
@@ -110,8 +107,14 @@
                 const input = document.createElement("input");
                 input.type = "text";
                 input.placeholder = `Clip URL ${i + 1}`;
+                input.id = `clip-${i + 1}`;
                 container.appendChild(input);
             }
+
+            const startBattleButton = document.createElement("button");
+            startBattleButton.innerText = "Start Battle";
+            startBattleButton.onclick = startBattle;
+            container.appendChild(startBattleButton);
         }
 
         function startBattle() {
