@@ -62,45 +62,49 @@
     <div class="container">
         <h1>Twitch Clip Battle</h1>
         <div class="button-container">
-            <button onclick="generateInputs(8)">8 Clips</button>
-            <button onclick="generateInputs(16)">16 Clips</button>
-            <button onclick="generateInputs(32)">32 Clips</button>
+            <button id="btn-8">8 Clips</button>
+            <button id="btn-16">16 Clips</button>
+            <button id="btn-32">32 Clips</button>
         </div>
         <div id="input-container" class="input-container">
             <!-- Input fields will appear here -->
         </div>
-        <div id="battle-container" class="battle">
-            <iframe id="clip1" height="360" width="640" allowfullscreen></iframe>
-            <iframe id="clip2" height="360" width="640" allowfullscreen></iframe>
-        </div>
     </div>
 
     <script>
-        // Define the generateInputs function in the global scope
-        function generateInputs(count) {
-            console.log(`generateInputs called with count: ${count}`);
-            const container = document.getElementById("input-container");
-            container.innerHTML = ""; // Clear existing inputs
+        // Wait until the DOM is fully loaded
+        document.addEventListener("DOMContentLoaded", () => {
+            const inputContainer = document.getElementById("input-container");
 
-            for (let i = 0; i < count; i++) {
-                const input = document.createElement("input");
-                input.type = "text";
-                input.placeholder = `Clip URL ${i + 1}`;
-                input.id = `clip-${i + 1}`;
-                container.appendChild(input);
+            // Function to generate input fields
+            function generateInputs(count) {
+                inputContainer.innerHTML = ""; // Clear existing inputs
+                console.log(`Generating ${count} inputs.`);
+                for (let i = 0; i < count; i++) {
+                    const input = document.createElement("input");
+                    input.type = "text";
+                    input.placeholder = `Clip URL ${i + 1}`;
+                    input.id = `clip-${i + 1}`;
+                    inputContainer.appendChild(input);
+                }
+
+                // Add a "Start Battle" button if it doesn't exist
+                if (!document.getElementById("start-battle-button")) {
+                    const startBattleButton = document.createElement("button");
+                    startBattleButton.id = "start-battle-button";
+                    startBattleButton.innerText = "Start Battle";
+                    startBattleButton.addEventListener("click", () => {
+                        console.log("Start Battle clicked!");
+                    });
+                    inputContainer.appendChild(startBattleButton);
+                }
             }
 
-            const existingStartButton = document.getElementById("start-battle-button");
-            if (!existingStartButton) {
-                const startBattleButton = document.createElement("button");
-                startBattleButton.id = "start-battle-button";
-                startBattleButton.innerText = "Start Battle";
-                startBattleButton.addEventListener("click", () => {
-                    console.log("Start Battle clicked!");
-                });
-                container.appendChild(startBattleButton);
-            }
-        }
+            // Bind event listeners to buttons
+            document.getElementById("btn-8").addEventListener("click", () => generateInputs(8));
+            document.getElementById("btn-16").addEventListener("click", () => generateInputs(16));
+            document.getElementById("btn-32").addEventListener("click", () => generateInputs(32));
+        });
     </script>
 </body>
 </html>
