@@ -90,8 +90,8 @@
 
             // Generate input fields
             function generateInputs(count) {
+                console.log("Generating input fields...");
                 inputContainer.innerHTML = ""; // Clear existing inputs
-                console.log(`Generating ${count} inputs.`);
                 for (let i = 0; i < count; i++) {
                     const input = document.createElement("input");
                     input.type = "text";
@@ -100,7 +100,6 @@
                     inputContainer.appendChild(input);
                 }
 
-                // Add a "Start Battle" button if it doesn't exist
                 if (!document.getElementById("start-battle-button")) {
                     const startBattleButton = document.createElement("button");
                     startBattleButton.id = "start-battle-button";
@@ -119,6 +118,7 @@
 
             // Start the battle process
             function startBattle() {
+                console.log("Start Battle button clicked!");
                 const inputs = document.querySelectorAll("#input-container input");
                 clips = Array.from(inputs)
                     .map(input => parseClipId(input.value.trim()))
@@ -129,7 +129,7 @@
                     return;
                 }
 
-                console.log("Clips for battle:", clips);
+                console.log("Clips ready for battle:", clips);
                 currentBattleIndex = 0;
                 nextRoundClips = [];
                 inputContainer.style.display = "none";
@@ -166,6 +166,7 @@
 
             // Select the winner for the current battle
             window.selectWinner = function (winner) {
+                console.log(`Winner selected: ${winner}`);
                 nextRoundClips.push(winner);
                 currentBattleIndex += 2;
                 displayBattle();
