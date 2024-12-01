@@ -56,44 +56,29 @@
             border-radius: 5px;
             font-size: 16px;
         }
-        #title {
-            font-size: 24px;
-            margin-bottom: 20px;
-            border: none;
-            background-color: transparent;
-            color: white;
-            text-align: center;
-            outline: none;
-        }
     </style>
 </head>
 <body>
     <div class="container">
-        <input id="title" type="text" value="Twitch Clip Battle" />
-        <p>Select Tournament Size:</p>
+        <h1>Twitch Clip Battle</h1>
         <div class="button-container">
             <button onclick="generateInputs(8)">8 Clips</button>
             <button onclick="generateInputs(16)">16 Clips</button>
             <button onclick="generateInputs(32)">32 Clips</button>
         </div>
         <div id="input-container" class="input-container">
-            <!-- Individual clip input boxes will be generated here -->
+            <!-- Input fields will appear here -->
         </div>
         <div id="battle-container" class="battle">
             <iframe id="clip1" height="360" width="640" allowfullscreen></iframe>
             <iframe id="clip2" height="360" width="640" allowfullscreen></iframe>
         </div>
-        <div id="winner-buttons" class="button-container" style="display: none;">
-            <!-- Winner selection buttons will be generated here -->
-        </div>
     </div>
 
     <script>
-        let clips = [];
-        let currentBattleIndex = 0;
-        let nextRoundClips = [];
-
+        // Define the generateInputs function in the global scope
         function generateInputs(count) {
+            console.log(`generateInputs called with count: ${count}`);
             const container = document.getElementById("input-container");
             container.innerHTML = ""; // Clear existing inputs
 
@@ -110,76 +95,11 @@
                 const startBattleButton = document.createElement("button");
                 startBattleButton.id = "start-battle-button";
                 startBattleButton.innerText = "Start Battle";
-                startBattleButton.onclick = startBattle;
+                startBattleButton.addEventListener("click", () => {
+                    console.log("Start Battle clicked!");
+                });
                 container.appendChild(startBattleButton);
             }
-        }
-
-        function parseClipId(url) {
-            const regex = /twitch\\.tv\\/[\\w-]+\\/clip\\/([\\w-]+)/;
-            const match = url.match(regex);
-            return match ? match[1] : null;
-        }
-
-        function startBattle() {
-            const inputs = document.querySelectorAll("#input-container input");
-            clips = Array.from(inputs)
-                .map(input => parseClipId(input.value.trim()))
-                .filter(Boolean);
-
-            if (clips.length < 2) {
-                alert("Please enter at least two valid Twitch clip URLs.");
-                return;
-            }
-
-            clips = shuffle(clips); // Randomize the clips
-            currentBattleIndex = 0;
-            nextRoundClips = []; // Reset next round clips
-            displayBattle();
-        }
-
-        function shuffle(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-            return array;
-        }
-
-        function displayBattle() {
-            const battleContainer = document.getElementById("battle-container");
-            const winnerButtons = document.getElementById("winner-buttons");
-
-            if (currentBattleIndex >= clips.length - 1) {
-                if (nextRoundClips.length > 1) {
-                    clips = nextRoundClips;
-                    currentBattleIndex = 0;
-                    nextRoundClips = [];
-                    displayBattle();
-                } else {
-                    battleContainer.innerHTML = `<h2>Champion: ${nextRoundClips[0]}</h2>`;
-                    winnerButtons.style.display = "none";
-                }
-                return;
-            }
-
-            const clip1 = clips[currentBattleIndex];
-            const clip2 = clips[currentBattleIndex + 1];
-
-            document.getElementById("clip1").src = `https://clips.twitch.tv/embed?clip=${clip1}&parent=whisqey.github.io`;
-            document.getElementById("clip2").src = `https://clips.twitch.tv/embed?clip=${clip2}&parent=whisqey.github.io`;
-
-            winnerButtons.innerHTML = `
-                <button onclick="selectWinner('${clip1}')">Select Winner: Clip 1</button>
-                <button onclick="selectWinner('${clip2}')">Select Winner: Clip 2</button>
-            `;
-            winnerButtons.style.display = "block";
-        }
-
-        function selectWinner(clip) {
-            nextRoundClips.push(clip);
-            currentBattleIndex += 2;
-            displayBattle();
         }
     </script>
 </body>
