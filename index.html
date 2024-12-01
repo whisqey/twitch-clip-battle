@@ -111,10 +111,14 @@
                 container.appendChild(input);
             }
 
-            const startBattleButton = document.createElement("button");
-            startBattleButton.innerText = "Start Battle";
-            startBattleButton.onclick = startBattle;
-            container.appendChild(startBattleButton);
+            const existingStartButton = document.getElementById("start-battle-button");
+            if (!existingStartButton) {
+                const startBattleButton = document.createElement("button");
+                startBattleButton.id = "start-battle-button";
+                startBattleButton.innerText = "Start Battle";
+                startBattleButton.onclick = startBattle;
+                container.appendChild(startBattleButton);
+            }
         }
 
         function startBattle() {
