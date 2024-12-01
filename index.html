@@ -72,9 +72,9 @@
         <input id="title" type="text" value="Twitch Clip Battle" />
         <p>Select Tournament Size:</p>
         <div class="button-container">
-            <button id="btn-8">8 Clips</button>
-            <button id="btn-16">16 Clips</button>
-            <button id="btn-32">32 Clips</button>
+            <button onclick="generateInputs(8)">8 Clips</button>
+            <button onclick="generateInputs(16)">16 Clips</button>
+            <button onclick="generateInputs(32)">32 Clips</button>
         </div>
         <div id="input-container" class="input-container">
             <!-- Individual clip input boxes will be generated here -->
@@ -89,12 +89,9 @@
     </div>
 
     <script>
-        // Add event listeners after DOM content is loaded
-        document.addEventListener("DOMContentLoaded", () => {
-            document.getElementById("btn-8").addEventListener("click", () => generateInputs(8));
-            document.getElementById("btn-16").addEventListener("click", () => generateInputs(16));
-            document.getElementById("btn-32").addEventListener("click", () => generateInputs(32));
-        });
+        let clips = [];
+        let currentBattleIndex = 0;
+        let nextRoundClips = [];
 
         function generateInputs(count) {
             const container = document.getElementById("input-container");
@@ -113,14 +110,10 @@
                 const startBattleButton = document.createElement("button");
                 startBattleButton.id = "start-battle-button";
                 startBattleButton.innerText = "Start Battle";
-                startBattleButton.addEventListener("click", startBattle);
+                startBattleButton.onclick = startBattle;
                 container.appendChild(startBattleButton);
             }
         }
-
-        let clips = [];
-        let currentBattleIndex = 0;
-        let nextRoundClips = [];
 
         function parseClipId(url) {
             const regex = /twitch\\.tv\\/[\\w-]+\\/clip\\/([\\w-]+)/;
