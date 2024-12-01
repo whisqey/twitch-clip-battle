@@ -72,8 +72,6 @@
         <input id="title" type="text" value="Twitch Clip Battle" />
         <p>Select Tournament Size:</p>
         <div class="button-container">
-            <button onclick="generateInputs(2)">2 Clips</button>
-            <button onclick="generateInputs(4)">4 Clips</button>
             <button onclick="generateInputs(8)">8 Clips</button>
             <button onclick="generateInputs(16)">16 Clips</button>
             <button onclick="generateInputs(32)">32 Clips</button>
@@ -87,17 +85,20 @@
         <div id="battle-container" class="battle">
             <!-- Clips will be displayed here -->
         </div>
+        <div id="winner-buttons" class="button-container" style="display: none;">
+            <!-- Winner selection buttons will be generated here -->
+        </div>
         <div id="next-button" class="button-container" style="display: none;">
-            <button onclick="nextBattle()">Next Battle</button>
+            <button onclick="nextRound()">Next Round</button>
         </div>
     </div>
 
     <script>
         let clips = [];
         let currentBattleIndex = 0;
+        let nextRoundClips = [];
 
         function parseClipId(url) {
-            // Updated regex to handle URLs with channel names and clip IDs
             const regex = /twitch\.tv\/[\w-]+\/clip\/([\w-]+)/;
             const match = url.match(regex);
             return match ? match[1] : null;
@@ -128,6 +129,7 @@
 
             clips = shuffle(clips); // Randomize the clips
             currentBattleIndex = 0;
+            nextRoundClips = []; // Reset next round clips
             displayBattle();
         }
 
@@ -141,27 +143,51 @@
 
         function displayBattle() {
             const battleContainer = document.getElementById("battle-container");
+            const winnerButtons = document.getElementById("winner-buttons");
             const nextButton = document.getElementById("next-button");
 
             if (currentBattleIndex >= clips.length - 1) {
-                battleContainer.innerHTML = "<h2>Tournament Over!</h2>";
-                nextButton.style.display = "none";
+                if (nextRoundClips.length > 1) {
+                    clips = nextRoundClips;
+                    currentBattleIndex = 0;
+                    nextRoundClips = [];
+                    displayBattle();
+                } else {
+                    battleContainer.innerHTML = `<h2>Champion: ${nextRoundClips[0]}</h2>`;
+                    winnerButtons.style.display = "none";
+                    nextButton.style.display = "none";
+                }
                 return;
             }
 
             const clip1 = clips[currentBattleIndex];
             const clip2 = clips[currentBattleIndex + 1];
+
             battleContainer.innerHTML = `
-                <iframe src="https://clips.twitch.tv/embed?clip=${clip1}&parent=localhost" 
+                <iframe src="https://clips.twitch.tv/embed?clip=${clip1}&parent=https://whisqey.github.io/twitch-clip-battle/" 
                         height="360" width="640" allowfullscreen></iframe>
-                <iframe src="https://clips.twitch.tv/embed?clip=${clip2}&parent=localhost" 
+                <iframe src="https://clips.twitch.tv/embed?clip=${clip2}&parent=https://whisqey.github.io/twitch-clip-battle/" 
                         height="360" width="640" allowfullscreen></iframe>
             `;
-            nextButton.style.display = "block";
+
+            winnerButtons.innerHTML = `
+                <button onclick="selectWinner('${clip1}')">Select Winner: Clip 1</button>
+                <button onclick="selectWinner('${clip2}')">Select Winner: Clip 2</button>
+            `;
+            winnerButtons.style.display = "block";
+            nextButton.style.display = "none";
         }
 
-        function nextBattle() {
-            currentBattleIndex += 2; // Move to the next pair of clips
+        function selectWinner(clip) {
+            nextRoundClips.push(clip);
+            currentBattleIndex += 2;
+            displayBattle();
+        }
+
+        function nextRound() {
+            currentBattleIndex = 0;
+            clips = nextRoundClips;
+            nextRoundClips = [];
             displayBattle();
         }
     </script>
